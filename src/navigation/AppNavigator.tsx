@@ -6,6 +6,7 @@ import SignUpScreen from '../screens/SignUpScreen';
 import EmailVerifyScreen from '../screens/EmailVerifyScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import Profile from '../tabScreens/Profile';
 import { User } from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user }) => {
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="EmailVerify" component={EmailVerifyScreen} />
+      <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </Stack.Navigator>

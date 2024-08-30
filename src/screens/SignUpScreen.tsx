@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../config/firebaseConfig';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../utils/types'; // Ensure you have this types file
+import { register } from '../api/api'
 
 type SignUpScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'SignUp'>;
 
@@ -20,8 +22,17 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSignUp = async () => {
     try {
+      console.warn("User")
+      await register({firstName, lastName, email, password})
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
+      await AsyncStorage.setItem('userTempData', JSON.stringify({
+        uid: userCredential.user.uid,
+        firstName,
+        lastName,
+        email,
+        password
+      }));
       navigation.navigate('EmailVerify');
     } catch (error) {
       setError((error as Error).message);

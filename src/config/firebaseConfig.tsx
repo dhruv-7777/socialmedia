@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -13,6 +14,7 @@ const firebaseConfig = {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const firestore = getFirestore(app);
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -21,6 +23,4 @@ const firebaseConfig = {
     }
   });
   
-  export { auth, signOut, onAuthStateChanged  };
-
-
+  export { auth, signOut, onAuthStateChanged, firestore };

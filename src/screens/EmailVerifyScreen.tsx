@@ -1,8 +1,11 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
-import { auth } from '../config/firebaseConfig';
+import React, { useEffect } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import { auth, firestore } from '../config/firebaseConfig';
+import { collection, addDoc } from 'firebase/firestore';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StackParamList } from '../utils/types'; // Ensure this file exists
+import { StackParamList } from '../utils/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 type EmailVerifyScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'EmailVerify'>;
 
@@ -11,21 +14,37 @@ interface Props {
 }
 
 const EmailVerifyScreen: React.FC<Props> = ({ navigation }) => {
-  const user = auth.currentUser;
+  useEffect(() => {
+    const checkVerification = async () => {
+      const user = auth.currentUser;
+      await user?.reload(); 
 
-  const checkVerification = async () => {
-    await user?.reload();
-    if (user?.emailVerified) {
-      navigation.navigate('Home');
-    } else {
-      Alert.alert('Verification Pending', 'Please verify your email before continuing.');
-    }
-  };
+      if (user?.emailVerified) {
+        const userTempData = await AsyncStorage.getItem('userTempData');
+        if (userTempData) {
+          const { uid, firstName, lastName, email, password } = JSON.parse(userTempData);
+          
+          await addDoc(collection(firestore, 'users'), {
+            uid,
+            firstName,
+            lastName,
+            email,
+            password,
+          });
+          await AsyncStorage.removeItem('userTempData');
+
+          navigation.navigate('Home');
+        }
+      }
+    };
+
+    checkVerification();
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Please verify your email before continuing.</Text>
-      <Button title="I have verified" onPress={checkVerification} color="#28a745" />
+      <Text style={styles.title}>Please verify your email</Text>
+      <Button title="Check Verification" onPress={() => navigation.navigate('Home')} />
     </View>
   );
 };
@@ -34,14 +53,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
     backgroundColor: '#f8f9fa',
   },
-  text: {
-    fontSize: 18,
-    textAlign: 'center',
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
   },
 });
 

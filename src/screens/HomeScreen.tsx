@@ -48,17 +48,9 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaView, View, Text } from 'react-native';
 import Dashboard from '../tabScreens/Dashboard';
-// import Settings from '../tabScreens/Setting';
+import SettingsScreen from '../tabScreens/Setting';
 import Connection from '../tabScreens/Connection';
 
-
-function SettingsScreen() {
-  return (
-    <View>
-      <Text>Settings</Text>
-    </View>
-  );
-}
 
 function NotificationsScreen() {
   return (

@@ -3,5 +3,7 @@ export type StackParamList = {
     EmailVerify: undefined;
     Home: undefined;
     SignIn: undefined;
+    Profile: undefined;
+    ChangePassword: undefined;
   };
   

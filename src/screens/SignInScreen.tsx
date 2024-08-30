@@ -20,15 +20,12 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       if (auth.currentUser?.emailVerified) {
-        console.warn("Haresh");
+       
         navigation.navigate('Home');
       } else {
-        console.warn("Suresh");
         navigation.navigate('EmailVerify');
-
       }
     } catch (error) {
-      console.warn("Ramesh");
       setError((error as Error).message);
     }
   };
